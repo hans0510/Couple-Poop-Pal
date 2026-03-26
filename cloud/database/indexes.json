@@ -1,0 +1,78 @@
+{
+  "indexes": [
+    {
+      "collection": "users",
+      "fields": [
+        {
+          "name": "openId",
+          "order": "asc"
+        }
+      ],
+      "unique": true
+    },
+    {
+      "collection": "users",
+      "fields": [
+        {
+          "name": "pairId",
+          "order": "asc"
+        }
+      ]
+    },
+    {
+      "collection": "pairs",
+      "fields": [
+        {
+          "name": "inviteCode",
+          "order": "asc"
+        }
+      ],
+      "unique": true
+    },
+    {
+      "collection": "pairs",
+      "fields": [
+        {
+          "name": "status",
+          "order": "asc"
+        }
+      ]
+    },
+    {
+      "collection": "bowel_records",
+      "fields": [
+        {
+          "name": "pairId",
+          "order": "asc"
+        },
+        {
+          "name": "occurredAt",
+          "order": "desc"
+        }
+      ]
+    },
+    {
+      "collection": "menstrual_cycles",
+      "fields": [
+        {
+          "name": "pairId",
+          "order": "asc"
+        },
+        {
+          "name": "startDate",
+          "order": "desc"
+        }
+      ]
+    },
+    {
+      "collection": "reminder_state",
+      "fields": [
+        {
+          "name": "userOpenId",
+          "order": "asc"
+        }
+      ],
+      "unique": true
+    }
+  ]
+}

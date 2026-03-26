@@ -1,0 +1,37 @@
+{
+  "pages": [
+    "pages/onboarding/index",
+    "pages/home/index",
+    "pages/history/index",
+    "pages/settings/index"
+  ],
+  "window": {
+    "navigationBarTitleText": "Couple Health",
+    "navigationBarBackgroundColor": "#f7efe8",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#f5f1ec",
+    "backgroundTextStyle": "dark"
+  },
+  "tabBar": {
+    "color": "#7c6f68",
+    "selectedColor": "#b35d44",
+    "backgroundColor": "#fffaf6",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/home/index",
+        "text": "Home"
+      },
+      {
+        "pagePath": "pages/history/index",
+        "text": "History"
+      },
+      {
+        "pagePath": "pages/settings/index",
+        "text": "Settings"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

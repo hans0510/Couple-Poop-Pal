@@ -1,0 +1,76 @@
+<view class="page-shell">
+  <view wx:if="{{loading}}" class="hero-card">
+    <view class="section-title">正在准备你们的小空间</view>
+    <view class="section-subtitle">先把当前状态同步一下。</view>
+  </view>
+
+  <block wx:elif="{{stage === 'waiting'}}">
+    <view class="hero-card">
+      <view class="section-title">配对码已生成</view>
+      <view class="section-subtitle">把邀请码发给对方，对方选另一个身份后加入就能开始记录。</view>
+      <view class="value">{{waitingPair.inviteCode}}</view>
+      <view class="button-row" style="margin-top: 24rpx;">
+        <button class="button-primary" bindtap="copyInviteCode">复制邀请码</button>
+        <button class="button-secondary" bindtap="bootstrap">刷新状态</button>
+      </view>
+    </view>
+  </block>
+
+  <block wx:else>
+    <view class="hero-card">
+      <view class="section-title">你们的双人健康记录</view>
+      <view class="section-subtitle">固定一男一女两个账号，完全互相可见，主打轻量记录和提醒。</view>
+
+      <view class="capsule-row" style="margin-bottom: 22rpx;">
+        <view
+          class="{{mode === 'create' ? 'chip' : 'chip-muted'}}"
+          data-mode="create"
+          bindtap="handleModeChange"
+        >
+          我来创建
+        </view>
+        <view
+          class="{{mode === 'join' ? 'chip' : 'chip-muted'}}"
+          data-mode="join"
+          bindtap="handleModeChange"
+        >
+          我来加入
+        </view>
+      </view>
+
+      <view class="field">
+        <text class="field-label">昵称</text>
+        <input class="text-input" placeholder="比如：阿拉 / 宝宝" value="{{nickName}}" bindinput="handleNickNameInput" />
+      </view>
+
+      <view class="field">
+        <text class="field-label">身份</text>
+        <view class="capsule-row">
+          <view
+            class="{{role === 'male' ? 'chip' : 'chip-muted'}}"
+            data-role="male"
+            bindtap="handleRoleChange"
+          >
+            男方
+          </view>
+          <view
+            class="{{role === 'female' ? 'chip' : 'chip-muted'}}"
+            data-role="female"
+            bindtap="handleRoleChange"
+          >
+            女方
+          </view>
+        </view>
+      </view>
+
+      <view wx:if="{{mode === 'join'}}" class="field">
+        <text class="field-label">邀请码</text>
+        <input class="text-input" maxlength="6" placeholder="输入对方给你的邀请码" value="{{inviteCode}}" bindinput="handleInviteCodeInput" />
+      </view>
+
+      <button class="button-primary" bindtap="submitPairAction">
+        {{mode === 'create' ? '创建双人空间' : '加入双人空间'}}
+      </button>
+    </view>
+  </block>
+</view>

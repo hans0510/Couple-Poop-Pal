@@ -1,0 +1,110 @@
+<view class="page-shell">
+  <view wx:if="{{loading}}" class="hero-card">
+    <view class="section-title">整理历史记录中</view>
+    <view class="section-subtitle">把你们两个人的记录按时间排好给你看。</view>
+  </view>
+
+  <block wx:else>
+    <view class="panel">
+      <view class="section-title">排便记录</view>
+      <view wx:if="{{!history.bowelRecords.length}}" class="empty-state">还没有排便记录。</view>
+
+      <view wx:for="{{history.bowelRecords}}" wx:key="_id" class="item-card">
+        <view class="value-small">{{item.occurredAtLabel}}</view>
+        <view class="item-meta">{{item.ownerRoleLabel}} · {{item.typeLabel}} · {{item.amountLabel}}</view>
+        <view wx:if="{{item.canEdit}}" class="button-row" style="margin-top: 14rpx;">
+          <button class="button-secondary" data-id="{{item._id}}" bindtap="startEditBowel">编辑</button>
+          <button class="button-danger" data-id="{{item._id}}" bindtap="deleteBowelRecord">删除</button>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{editingBowelId}}" class="sheet" style="margin-top: 20rpx;">
+      <view class="section-title">编辑排便记录</view>
+      <view class="field">
+        <text class="field-label">日期</text>
+        <picker mode="date" value="{{bowelForm.date}}" bindchange="handleBowelDateChange">
+          <view class="picker-display">{{bowelForm.date}}</view>
+        </picker>
+      </view>
+      <view class="field">
+        <text class="field-label">时间</text>
+        <picker mode="time" value="{{bowelForm.time}}" bindchange="handleBowelTimeChange">
+          <view class="picker-display">{{bowelForm.time}}</view>
+        </picker>
+      </view>
+      <view class="field">
+        <text class="field-label">类型</text>
+        <view class="capsule-row">
+          <view
+            wx:for="{{bowelTypeOptions}}"
+            wx:key="value"
+            class="{{bowelForm.type === item.value ? 'chip' : 'chip-muted'}}"
+            data-value="{{item.value}}"
+            bindtap="handleBowelTypeChange"
+          >
+            {{item.label}}
+          </view>
+        </view>
+      </view>
+      <view class="field">
+        <text class="field-label">量</text>
+        <view class="capsule-row">
+          <view
+            wx:for="{{bowelAmountOptions}}"
+            wx:key="value"
+            class="{{bowelForm.amount === item.value ? 'chip' : 'chip-muted'}}"
+            data-value="{{item.value}}"
+            bindtap="handleBowelAmountChange"
+          >
+            {{item.label}}
+          </view>
+        </view>
+      </view>
+      <view class="button-row">
+        <button class="button-primary" bindtap="submitBowelEdit">保存修改</button>
+        <button class="button-secondary" bindtap="cancelEditBowel">取消</button>
+      </view>
+    </view>
+
+    <view wx:if="{{viewerRole === 'female'}}" class="panel" style="margin-top: 20rpx;">
+      <view class="section-title">经期记录</view>
+      <view wx:if="{{!history.menstrualCycles.length}}" class="empty-state">还没有经期记录。</view>
+
+      <view wx:for="{{history.menstrualCycles}}" wx:key="_id" class="item-card">
+        <view class="value-small">开始：{{item.startDateLabel}}</view>
+        <view class="item-meta">结束：{{item.endDateLabel}}</view>
+        <view wx:if="{{item.canEdit}}" class="button-row" style="margin-top: 14rpx;">
+          <button class="button-secondary" data-id="{{item._id}}" bindtap="startEditCycle">编辑</button>
+          <button class="button-danger" data-id="{{item._id}}" bindtap="deleteCycle">删除</button>
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{editingCycleId}}" class="sheet" style="margin-top: 20rpx;">
+      <view class="section-title">编辑经期记录</view>
+      <view class="field">
+        <text class="field-label">开始日期</text>
+        <picker mode="date" value="{{cycleForm.startDate}}" bindchange="handleCycleStartChange">
+          <view class="picker-display">{{cycleForm.startDate}}</view>
+        </picker>
+      </view>
+      <view class="field">
+        <text class="field-label">是否已结束</text>
+        <view class="capsule-row">
+          <view class="{{cycleForm.hasEndDate ? 'chip' : 'chip-muted'}}" bindtap="toggleCycleEnd">已结束</view>
+        </view>
+      </view>
+      <view wx:if="{{cycleForm.hasEndDate}}" class="field">
+        <text class="field-label">结束日期</text>
+        <picker mode="date" value="{{cycleForm.endDate}}" bindchange="handleCycleEndChange">
+          <view class="picker-display">{{cycleForm.endDate}}</view>
+        </picker>
+      </view>
+      <view class="button-row">
+        <button class="button-primary" bindtap="submitCycleEdit">保存修改</button>
+        <button class="button-secondary" bindtap="cancelEditCycle">取消</button>
+      </view>
+    </view>
+  </block>
+</view>

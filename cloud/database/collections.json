@@ -1,0 +1,9 @@
+{
+  "collections": [
+    "users",
+    "pairs",
+    "bowel_records",
+    "menstrual_cycles",
+    "reminder_state"
+  ]
+}

@@ -1,0 +1,144 @@
+<view class="page-shell">
+  <view wx:if="{{loading}}" class="hero-card">
+    <view class="section-title">首页载入中</view>
+    <view class="section-subtitle">正在同步你和 TA 的最新状态。</view>
+  </view>
+
+  <block wx:elif="{{dashboard}}">
+    <view class="hero-card">
+      <view class="section-title">今天的共享状态</view>
+      <view class="section-subtitle">轻量记录，互相可见，需要的时候及时提醒。</view>
+      <view class="button-row">
+        <button class="button-primary" bindtap="openBowelForm">记一次拉屎</button>
+        <button
+          wx:if="{{dashboard.me.role === 'female'}}"
+          class="button-secondary"
+          data-mode="start"
+          bindtap="openCycleForm"
+        >
+          经期开始
+        </button>
+        <button
+          wx:if="{{dashboard.me.role === 'female'}}"
+          class="button-secondary"
+          data-mode="end"
+          bindtap="openCycleForm"
+        >
+          经期结束
+        </button>
+      </view>
+    </view>
+
+    <view class="summary-grid" style="margin-top: 20rpx;">
+      <view class="stat-card">
+        <view class="label">我</view>
+        <view class="value">{{dashboard.me.nickName}}</view>
+        <view class="item-meta">{{dashboard.me.relativeLastRecord}}</view>
+        <view wx:if="{{dashboard.me.latestBowelRecord}}" class="item-meta">
+          {{dashboard.me.latestBowelRecord.occurredAtLabel}} · {{dashboard.me.latestBowelRecord.typeLabel}} · {{dashboard.me.latestBowelRecord.amountLabel}}
+        </view>
+        <view class="{{dashboard.me.reminderState.isOverdue ? 'danger-text' : 'success-text'}}" style="margin-top: 10rpx;">
+          {{dashboard.me.overdueHint}}
+        </view>
+      </view>
+
+      <view wx:if="{{dashboard.partner}}" class="stat-card">
+        <view class="label">TA</view>
+        <view class="value">{{dashboard.partner.nickName}}</view>
+        <view class="item-meta">{{dashboard.partner.relativeLastRecord}}</view>
+        <view wx:if="{{dashboard.partner.latestBowelRecord}}" class="item-meta">
+          {{dashboard.partner.latestBowelRecord.occurredAtLabel}} · {{dashboard.partner.latestBowelRecord.typeLabel}} · {{dashboard.partner.latestBowelRecord.amountLabel}}
+        </view>
+        <view class="{{dashboard.partner.reminderState.isOverdue ? 'danger-text' : 'success-text'}}" style="margin-top: 10rpx;">
+          {{dashboard.partner.overdueHint}}
+        </view>
+      </view>
+    </view>
+
+    <view wx:if="{{dashboard.me.reminderState.isOverdue || (dashboard.partner && dashboard.partner.reminderState.isOverdue)}}" class="panel warning-card" style="margin-top: 20rpx;">
+      <view class="section-title">提醒一下</view>
+      <view wx:if="{{dashboard.me.reminderState.isOverdue}}" class="item-meta">
+        你已经有点久没记录排便了，记得吃点水果、多喝水。
+      </view>
+      <view wx:if="{{dashboard.partner && dashboard.partner.reminderState.isOverdue}}" class="item-meta">
+        {{dashboard.partner.nickName}} 也该被温柔提醒一下了。
+      </view>
+    </view>
+
+    <view wx:if="{{dashboard.menstrual}}" class="panel" style="margin-top: 20rpx;">
+      <view class="section-title">经期状态</view>
+      <view class="item-meta">记录者：{{dashboard.menstrual.ownerNickName}}</view>
+      <view class="value-small" style="margin-top: 12rpx;">
+        {{dashboard.menstrual.isActive ? '经期中' : '当前不在经期'}}
+      </view>
+      <view wx:if="{{dashboard.menstrual.activeCycle}}" class="item-meta">
+        开始于 {{dashboard.menstrual.activeCycle.startDateLabel}}，结束：{{dashboard.menstrual.activeCycle.endDateLabel}}
+      </view>
+      <view wx:if="{{dashboard.menstrual.prediction}}" class="item-meta">
+        预计下次：{{dashboard.menstrual.prediction.predictedStartDateLabel}}（{{dashboard.menstrual.prediction.source === 'history' ? '基于历史周期' : '默认 28 天'}}）
+      </view>
+    </view>
+
+    <view wx:if="{{showBowelForm}}" class="sheet" style="margin-top: 20rpx;">
+      <view class="section-title">新增排便记录</view>
+      <view class="field">
+        <text class="field-label">日期</text>
+        <picker mode="date" value="{{bowelForm.date}}" bindchange="handleBowelDateChange">
+          <view class="picker-display">{{bowelForm.date}}</view>
+        </picker>
+      </view>
+      <view class="field">
+        <text class="field-label">时间</text>
+        <picker mode="time" value="{{bowelForm.time}}" bindchange="handleBowelTimeChange">
+          <view class="picker-display">{{bowelForm.time}}</view>
+        </picker>
+      </view>
+      <view class="field">
+        <text class="field-label">类型</text>
+        <view class="capsule-row">
+          <view
+            wx:for="{{bowelTypeOptions}}"
+            wx:key="value"
+            class="{{bowelForm.type === item.value ? 'chip' : 'chip-muted'}}"
+            data-value="{{item.value}}"
+            bindtap="handleBowelTypeChange"
+          >
+            {{item.label}}
+          </view>
+        </view>
+      </view>
+      <view class="field">
+        <text class="field-label">量</text>
+        <view class="capsule-row">
+          <view
+            wx:for="{{bowelAmountOptions}}"
+            wx:key="value"
+            class="{{bowelForm.amount === item.value ? 'chip' : 'chip-muted'}}"
+            data-value="{{item.value}}"
+            bindtap="handleBowelAmountChange"
+          >
+            {{item.label}}
+          </view>
+        </view>
+      </view>
+      <view class="button-row">
+        <button class="button-primary" bindtap="submitBowelRecord">保存</button>
+        <button class="button-secondary" bindtap="closeBowelForm">取消</button>
+      </view>
+    </view>
+
+    <view wx:if="{{showCycleForm}}" class="sheet" style="margin-top: 20rpx;">
+      <view class="section-title">{{cycleMode === 'start' ? '记录经期开始' : '记录经期结束'}}</view>
+      <view class="field">
+        <text class="field-label">日期</text>
+        <picker mode="date" value="{{cycleDate}}" bindchange="handleCycleDateChange">
+          <view class="picker-display">{{cycleDate}}</view>
+        </picker>
+      </view>
+      <view class="button-row">
+        <button class="button-primary" bindtap="submitCycleAction">保存</button>
+        <button class="button-secondary" bindtap="closeCycleForm">取消</button>
+      </view>
+    </view>
+  </block>
+</view>

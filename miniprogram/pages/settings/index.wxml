@@ -1,0 +1,36 @@
+<view class="page-shell">
+  <view wx:if="{{loading}}" class="hero-card">
+    <view class="section-title">读取设置中</view>
+    <view class="section-subtitle">提醒偏好和配对信息马上就来。</view>
+  </view>
+
+  <block wx:elif="{{session}}">
+    <view class="hero-card">
+      <view class="section-title">我的身份</view>
+      <view class="value">{{session.user.nickName || '未设置昵称'}}</view>
+      <view class="item-meta">{{roleLabel}}</view>
+      <view class="item-meta">提醒状态：{{session.user.subscriptionEnabled ? '已开启' : '未开启'}}</view>
+    </view>
+
+    <view class="panel" style="margin-top: 20rpx;">
+      <view class="section-title">配对状态</view>
+      <view class="item-meta">当前状态：{{stage === 'paired' ? '已配对' : (stage === 'waiting' ? '等待对方加入' : '未开始配对')}}</view>
+      <view wx:if="{{session.pair}}" class="item-meta">邀请码：{{session.pair.inviteCode}}</view>
+      <view wx:if="{{session.pair && stage === 'waiting'}}" class="button-row" style="margin-top: 18rpx;">
+        <button class="button-secondary" bindtap="copyInviteCode">复制邀请码</button>
+      </view>
+    </view>
+
+    <view class="panel" style="margin-top: 20rpx;">
+      <view class="section-title">排便提醒</view>
+      <view class="item-meta">超过 48 小时没有排便记录时，首页会提醒，订阅消息可选。</view>
+      <view wx:if="{{!reminderTemplateReady}}" class="danger-text" style="margin-top: 12rpx;">
+        还没配置订阅消息模板 ID，暂时只能用小程序内提醒。
+      </view>
+      <view class="button-row" style="margin-top: 18rpx;">
+        <button class="button-primary" bindtap="requestReminderPermission">开启订阅提醒</button>
+        <button class="button-secondary" bindtap="disableReminder">关闭订阅提醒</button>
+      </view>
+    </view>
+  </block>
+</view>
